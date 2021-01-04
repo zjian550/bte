@@ -35,6 +35,7 @@ import (
 	core "github.com/libp2p/go-libp2p-core"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/metrics"
+	discovery "github.com/libp2p/go-libp2p-discovery"
 	"github.com/multiformats/go-multiaddr"
 )
 
@@ -171,7 +172,8 @@ func (p *P2P) StartP2P() {
 		Ctx:              p.ctx,
 		DB:               p.db,
 		RoutingTable:     p.discovery.RoutingTable(),
-		RoutingDiscovery: p.discovery.RoutingDiscovery,
+
+		RoutingDiscovery: discovery.NewRoutingDiscovery(p.discovery.kademliaDHT),
 	}
 	p.env = env
 	protocol.Init(env)
