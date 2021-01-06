@@ -197,6 +197,10 @@ func (s *ConnManager) MonitorAllPeers(seeds []string, host core.Host) {
 			}
 			//对relay中中继服务器要长期保持连接
 			for _, rpeer := range relays {
+				info, err := genAddrInfo(node)
+				if err != nil {
+					panic(`invalid relayNodeAddr in config, use format of "/ip4/118.89.190.76/tcp/13803/p2p/16Uiu2HAmRao56AsxpobLBvbNfDttheQxnke9y1uWQRMWW7XaEdk5"`)
+				}
 				if len(s.host.Network().ConnsToPeer(rpeer.ID)) == 0 {
 					s.host.Connect(context.Background(), *rpeer)
 				}
@@ -207,6 +211,13 @@ func (s *ConnManager) MonitorAllPeers(seeds []string, host core.Host) {
 			return
 		}
 	}
+}
+func genAddrInfo(addr string) (*peer.AddrInfo, error) {
+	mAddr, err := multiaddr.NewMultiaddr(addr)
+	if err != nil {
+		return nil, err
+	}
+	return peer.AddrInfoFromP2pAddr(mAddr)
 }
 
 // AddNeighbors add neighbors by peer info
