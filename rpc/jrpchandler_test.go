@@ -1637,3 +1637,18 @@ func TestChain33_QueryTotalFee(t *testing.T) {
 	assert.Equal(t, total.Fee, queryTotalFee(client, req1, t))
 	assert.True(t, bytes.Equal(req.Keys[0], req1.Keys[0]))
 }
+func TestChain33_convertHeader(t *testing.T) {
+	var header types.Header
+	var reheader rpctypes.Header
+	header.TxHash, _ = hex.DecodeString("7feb86911f2143b992c5d543cc7314f24c3f94535f1beb38f781f2a0d72ae918")
+	header.Height = 666
+	header.BlockTime = 1234567
+	header.Signature = nil
+	header.TxCount = 9
+	convertHeader(&header, &reheader)
+	assert.Equal(t, "0x7feb86911f2143b992c5d543cc7314f24c3f94535f1beb38f781f2a0d72ae918", reheader.TxHash)
+	assert.Equal(t, header.GetTxCount(), reheader.TxCount)
+	assert.Equal(t, header.GetBlockTime(), reheader.BlockTime)
+	assert.Equal(t, header.GetHeight(), reheader.Height)
+
+}
